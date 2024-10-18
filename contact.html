@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Righteous&display=swap" rel="stylesheet">
+    
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/main.css">
+    <link rel="stylesheet" href="css/all.min.css">
+    <link rel="stylesheet" href="css/media.css">
+</head>
+
+
+<body>
+
+<div class="sideBar">
+  <div class="menu">
+    <div class="menu-list">
+      <ul class="list-unstyled">
+        <li class="nav-item">
+          <a class="nav-link" href="search.html">Search</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="categories.html">Categories</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="area.html">Area</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="ingredients.html">Ingredients</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="contact.html">Contact Us</a>
+        </li>
+        
+          </ul>
+    </div>
+    <div class="menu-footer ">
+      <div class="icons">
+        <i class="fa-brands fa-facebook"></i>
+        <i class="fa-brands fa-twitter"></i>
+        <i class="fa-solid fa-globe"></i>
+      </div>
+      <p>Copyright Â© 2019 All Rights
+        Reserved.</p>
+    </div>
+  </div>
+  <div class="rightSide">
+    <img src="images/logo.png" alt="">
+    <i class="fa-solid fa-xmark fa-3x text-black xmark"></i>
+    <i class="fa-solid fa-bars fa-3x text-black bar "></i>
+    <div class="icons-footer d-flex flex-column ">
+      <i class="fa-solid fa-globe text-black py-1"></i>
+      <i class="fa-solid fa-share-nodes text-black"></i>
+    </div>
+  </div>
+</div>
+
+
+ <div class="contactUs vh-100 text-white d-flex justify-content-center align-items-center">
+<div class="container d-flex flex-wrap justify-content-center align-items-center">
+  
+    <div class="Inputs d-flex flex-wrap justify-content-center align-items-center">
+        <div class="mb-3 INPUTS me-3">
+          <input type="text" class="form-control" id="nameInput" placeholder="Enter your name">
+          <span class="error-message text-danger" id="nameError"></span> <!-- Error message for name -->
+        </div>
+        
+        <div class="mb-3 INPUTS">
+          <input type="email" class="form-control" id="emailInput" placeholder="Enter your Email">
+          <span class="error-message text-danger" id="emailError"></span> <!-- Error message for email -->
+        </div>
+        
+        <div class="mb-3 INPUTS me-3">
+          <input type="tel" class="form-control" id="phoneInput" placeholder="Enter your Phone">
+          <span class="error-message text-danger" id="phoneError"></span> <!-- Error message for phone -->
+        </div>
+        
+        <div class="mb-3 INPUTS">
+          <input type="number" class="form-control" id="ageInput" placeholder="Enter your Age">
+          <span class="error-message text-danger" id="ageError"></span> <!-- Error message for age -->
+        </div>
+        
+        <div class="mb-3 INPUTS me-3">
+          <input type="password" class="form-control" id="passwordInput" placeholder="Enter your Password">
+          <span class="error-message text-danger" id="passwordError"></span> <!-- Error message for password -->
+        </div>
+        
+        <div class="mb-3 INPUTS">
+          <input type="password" class="form-control" id="repasswordInput" placeholder="Enter your Repassword">
+          <span class="error-message text-danger" id="repasswordError"></span> <!-- Error message for repassword -->
+        </div>
+        
+        <button onclick="validateForm()" class="btn border-danger text-danger w-25">Submit</button>
+      </div>
+      
+      
+
+</div>
+ </div>
+
+<script src="js/jquery-3.7.1.js"></script>
+  <script src="js/index.js"></script>
+</body>
+
+</html>

@@ -32,16 +32,11 @@ body{
   flex-direction: column;
   justify-content: space-between;
   
- 
+}
 
-    
-}
-.menu-list{
-    background-color: blueviolet;
-}
 .menu-footer{
     width: 100%;
-    background-color: blue;
+   
 }
 .menu li{
     padding-block: 10px;

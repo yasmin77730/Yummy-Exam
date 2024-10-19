@@ -14,21 +14,21 @@ $('.xmark').on('click', function(){
     
 })
 
-// get data
+// get data for first page
 let allData=[];
-async function getData(id) {
+async function getData() {
   try{
-    let data= await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${id}`);
+    let data= await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=`);
     let finalData=await data.json();
     
-    allData=finalData.meals
+    allData=finalData.meals;
     console.log(allData);
     displayData(allData);
   }catch(error){
     console.log(error);
   }
 }
-getData('')
+
 
 function displayData(array){
     let cartouna='';
@@ -53,6 +53,29 @@ for (let i= 0; i < categoryList.length; i++) {
     
 }
 }
+getData()
+// end of first page 
+// start of mealsDetails
+let allProductsDetails=[];
+
+async function getDatadetails(index) {
+  try{
+    let data= await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${index}`);
+    let finalData=await data.json();
+    
+    allProductsDetails=finalData.meals
+    console.log(allProductsDetails);
+    displayProductDetails(allProductsDetails);
+  }catch(error){
+    console.log(error);
+  }
+}
+
+if(location.pathname=="/productDetails.html"){
+    getDatadetails(localStorage.getItem('productName'))
+}
+
+
 
 
 function displayProductDetails(array){
@@ -93,31 +116,6 @@ if(document.getElementById('Details'))  document.getElementById('Details').inner
 }
 
 
-let allProductsDetails=[];
-
-async function getDatadetails(index) {
-  try{
-    let data= await fetch(`https://www.themealdb.com/api/json/v1/1/search.php?s=${index}`);
-    let finalData=await data.json();
-    
-    allProductsDetails=finalData.meals
-    console.log(allProductsDetails);
-    displayProductDetails(allProductsDetails);
-  }catch(error){
-    console.log(error);
-  }
-}
-
-
-
-
-
-
-if(location.pathname=="/productDetails.html"){
-    getDatadetails(localStorage.getItem('productName'))
-}
-
-
 
 // searchPage
 let searchBtn1 = document.getElementById('searchByName');
@@ -132,27 +130,30 @@ async function getDataSearch(id) {
     let finalData=await data.json();
     allData2=finalData.meals
     console.log(allData2 +'hhhhh');
-    displayData();
+    displayDataSearch();
   }catch(error){
     console.log(error);
   }
 }
 
 
-function displayData(){
-    let cartouna='';
-    for(let i=0;i<allData2.length;i++){
-        cartouna+=`<div class="col-md-3 category">
-       <div class="meal rounded mt-5 position-relative overflow-hidden">
-        <img src="${allData2[i].strMealThumb}" class="w-100 rounded" alt="">
-        <div class="cover ">
-          <h3>${allData2[i].strMeal}</h3>
-        </div>
-       </div>
-      </div>`
-     
+function displayDataSearch() {
+  let cartouna = '';
+  if (allData2 && allData2.length > 0) {
+    for (let i = 0; i < allData2.length; i++) {
+      cartouna += `<div class="col-md-3 category">
+                     <div class="meal rounded mt-5 position-relative overflow-hidden">
+                       <img src="${allData2[i].strMealThumb}" class="w-100 rounded" alt="">
+                       <div class="cover">
+                         <h3>${allData2[i].strMeal}</h3>
+                       </div>
+                     </div>
+                   </div>`;
     }
- document.getElementById('demo2').innerHTML=cartouna;
+  } else {
+    cartouna = '<p>No meals found. Please try another search.</p>';
+  }
+  document.getElementById('demo2').innerHTML = cartouna;
 }
 
 
@@ -172,14 +173,14 @@ async function getDataSearch2(id) {
     let finalData=await data.json();
     allData3=finalData.meals
     console.log(allData3 +'hhhhh');
-    displayData();
+    displayDataSearch2();
   }catch(error){
     console.log(error);
   }
 }
 
 
-function displayData(){
+function displayDataSearch2(){
     let cartouna='';
     for(let i=0;i<allData3.length;i++){
         cartouna+=`<div class="col-md-3 category">
@@ -199,45 +200,6 @@ function displayData(){
     getDataSearch2(searchBtn2.value); 
   });
 
-
-
-
-
-
-
-
-  function displayDataSearch(array) {
-    let cartouna = '';
-
-    // Check if the array is valid and has meals
-    if (Array.isArray(array) && array.length > 0) {
-        for (let i = 0; i < array.length; i++) {
-            cartouna += `
-            <div class="col-md-3 products">
-                <div class="meal rounded mt-5 position-relative overflow-hidden">
-                    <img src="${array[i].strMealThumb}" class="w-100 rounded" alt="${array[i].strMeal}">
-                    <div class="cover">
-                        <h3>${array[i].strMeal}</h3>
-                    </div>
-                </div>
-            </div>`;
-        }
-    } else {
-        cartouna = '<p>No meals found. Please try another search.</p>';
-    }
-
-if(document.getElementById('demo2'))  document.getElementById('demo2').innerHTML=cartouna;
-
-let productsList=document.querySelectorAll('.products');
-for (let i= 0; i < productsList.length; i++) {
-    productsList[i].addEventListener('click',function(){
-    localStorage.setItem("productName",productsList[i].innerText)
-    location.href="../productDetails.html"
-  })
-    
-}
-}
-
 // categories page
 let allcategories = [];
 
@@ -245,31 +207,40 @@ async function getCategory() {
   try {
     let Data = await fetch("https://www.themealdb.com/api/json/v1/1/categories.php");
     let res = await Data.json();
-    allcategories = res.categories;  // Store the array of categories
-
-    console.log(allcategories); 
-     // Log the array
-     displayCategory();
+    
+    if (res.categories && res.categories.length > 0) {
+      allcategories = res.categories;
+      displayCategory();
+    } else {
+      console.log("No categories found.");
+    }
   } catch (error) {
-    console.log(error + ' is error');
+    console.log("Error fetching categories: " + error);
   }
 }
 
-getCategory();
+if(location.pathname=="/categories.html"){
+  getCategory();
+}
 
 
-function displayCategory(){
-  let cartona='';
-  for(let i=0;i<allcategories.length;i++){
-    cartona+=`<div class="col-md-3 categories ">
-        <div class="meal rounded mt-5 position-relative overflow-hidden">
-         <img src="${allcategories[i].strCategoryThumb}" class="w-100 rounded" alt="">
-        <div class="cover d-flex flex-column">
-           <h3 class="caption">${allcategories[i].strCategory}</h3>
-         
-       </div>
-        </div>     
-        </div>`
+
+function displayCategory() {
+  let cartona = '';
+  if (allcategories.length > 0) {
+    for (let i = 0; i < allcategories.length; i++) {
+      cartona += `
+        <div class="col-md-3 categories">
+          <div class="meal rounded mt-5 position-relative overflow-hidden">
+            <img src="${allcategories[i].strCategoryThumb}" class="w-100 rounded" alt="${allcategories[i].strCategory}">
+            <div class="cover d-flex flex-column">
+              <h3 class="caption">${allcategories[i].strCategory}</h3>
+            </div>
+          </div>
+        </div>`;
+    }
+  } else {
+    cartona = '<p>No categories found.</p>';  // Display a message if no data is found
   }
   if(document.getElementById('demo4')) document.getElementById('demo4').innerHTML=cartona;
   let catCard=document.querySelectorAll('.categories');
@@ -348,8 +319,8 @@ function displayIngredients(){
   for (let index = 0; index < allIngredients.length; index++) {
     cartounaa+=`  <div class="col-md-3 d-flex flex-column justify-content-center align-items-center">
                 <i class="fa-solid fa-drumstick-bite fa-4x"></i>
-            <h3>${allIngredients[i].strIngredient}</h3>
-            <p>${allIngredients[i].strDescription}</p>
+            <h3>${allIngredients[index].strIngredient}</h3>
+            <p>${allIngredients[index].strDescription}</p>
             </div>`
     
   }

@@ -33,7 +33,7 @@ async function getData() {
 function displayData(array){
     let cartouna='';
     for(let i=0;i<array.length;i++){
-        cartouna+=`<div class="col-md-3 category">
+        cartouna+=`<div class="col-md-3 meal">
        <div class="meal rounded mt-5 position-relative overflow-hidden">
         <img src="${array[i].strMealThumb}" class="w-100 rounded" alt="">
         <div class="cover ">
@@ -44,11 +44,11 @@ function displayData(array){
     }
 if(document.getElementById('demo'))  document.getElementById('demo').innerHTML=cartouna;
 
-let categoryList=document.querySelectorAll('.category');
+let categoryList=document.querySelectorAll('.meal');
 for (let i= 0; i < categoryList.length; i++) {
   categoryList[i].addEventListener('click',function(){
     localStorage.setItem("productName",categoryList[i].innerText)
-    location.href="../productDetails.html"
+    location.href="./productDetails.html"
   })
     
 }
@@ -157,7 +157,7 @@ function displayDataSearch() {
 }
 
 
-searchBtn1.addEventListener('input', function () {
+searchBtn1?.addEventListener('input', function () {
   getDataSearch(searchBtn1.value); 
   });
 
@@ -196,7 +196,7 @@ function displayDataSearch2(){
  document.getElementById('demo2').innerHTML=cartouna;
 }
 
-  searchBtn2.addEventListener('input', function () {
+  searchBtn2?.addEventListener('input', function () {
     getDataSearch2(searchBtn2.value); 
   });
 
@@ -251,17 +251,122 @@ function displayCategory() {
       let Text = catCard[i].innerText;
       console.log(Text);
       localStorage.setItem('catProduct', Text);
-      location.href="../categoryProducts.html"
+      location.href="./categoryProducts.html"
 
-
-      // Make sure this path is correct
     
     })
   }
 }
+ 
+let mealsByCat=[];
+async function getMealByCategory(id) {
+  try {
+    let Data = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?c=${id}`);
+    let res = await Data.json();
+    
+    if (res.meals && res.meals.length > 0) {
+      mealsByCat = res.meals.slice(0, 20);
+     console.log(mealsByCat);
+     displayMeals()
+    } else {
+      console.log("No categories found.");
+    }
+  } catch (error) {
+    console.log("Error fetching categories: " + error);
+  }
+}
+
+if(location.pathname=="/categoryProducts.html"){
+  getMealByCategory(localStorage.getItem('catProduct'))
+}
+
+function displayMeals(){
+  let cartouna='';
+  for (let index = 0; index < mealsByCat.length; index++) {
+   cartouna+=` <div class="col-md-3 cattmeals ">
+            <div class="meal rounded mt-5 position-relative overflow-hidden">
+             <img src="${mealsByCat[index].strMealThumb}" class="w-100 rounded" alt="">
+            <div class="cover d-flex flex-column">
+               <h3 class="caption">${mealsByCat[index].strMeal}</h3>
+             
+           </div>
+            </div>     
+            </div>`
+    
+  }
+  if(document.getElementById('demo5')) document.getElementById('demo5').innerHTML=cartouna;
+  let mealCards=document.querySelectorAll(".cattmeals");
+  for (let index = 0; index < mealCards.length; index++) {
+    mealCards[index]?.addEventListener('click',function(){
+      localStorage.setItem('mealId',mealCards[index].innerText);
+      location.href="./mealDetails.html"
+    })
+    
+  }
+
+}
+// display mealDetails
+let allMealsDetails=[];
+async function getMealDetails(id) {
+
+  try{
+    let data= await fetch(`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${id}`);
+    let finalData=await data.json();
+    
+    allMealsDetails=finalData.meals;
+    displayMealsDetails()
+    console.log(allMealsDetails);
+   
+  }catch(error){
+    console.log(error);
+  }
+}
+
+if(location.pathname=="/mealDetails.html"){
+  getMealDetails(localStorage.getItem('mealId'))
+}
+
+
+
+// display function
+function displayMealsDetails(){
+  let cartouna='';
+  for(let i=0;i<allMealsDetails.length;i++){
+      cartouna+=` <div class="productInfo col-md-4 ">
+              <div class="productImage p-5">
+               <img src="${allMealsDetails[i].strMealThumb}"" class="w-100 rounded-3 " alt="">
+              </div>
+              <h1 class="p-5">${allMealsDetails[i].strMeal}</h1>
+           </div>
+           <div class="productInfo2 d-flex flex-column py-5 col-md-8">
+               <h2 >Instructions</h2>
+               <p>${allMealsDetails[i].strInstructions}"</p>
+<h3>Area :${allMealsDetails[i].strArea}</h3>
+<h3>Category : ${allMealsDetails[i].strCategory}</h3>
+<h3>Recipes :</h3>
+<ul class=" list-unstyled d-flex g-3 flex-wrap">
+   <li class="alert alert-info m-2 p-1">${allMealsDetails[i].strIngredient1}</li>
+   <li class="alert alert-info m-2 p-1">${allMealsDetails[i].strIngredient2}</li>
+   <li class="alert alert-info m-2 p-1">${allMealsDetails[i].strIngredient3}</li>
+   <li class="alert alert-info m-2 p-1">${allMealsDetails[i].strIngredient4}</li>
+   <li class="alert alert-info m-2 p-1">${allMealsDetails[i].strIngredient5}</li>
+   <li class="alert alert-info m-2 p-1">${allMealsDetails[i].strIngredient6}</li>
+   <li class="alert alert-info m-2 p-1"> ${allMealsDetails[i].strIngredient7}</li>
+ </ul>
+ <h3>Tags :</h3>
+ <div class="btns d-flex">
+   <button class="btn btn-success me-2"><a href="" class="text-decoration-none text-white">Source</a> </button>
+   <button class="btn btn-danger">Youtube</button>
+ </div>
+
+
+           </div>`
+  }
+if(document.getElementById('MealDetails'))  document.getElementById('MealDetails').innerHTML=cartouna;
+
+}
 
 // area page
-
 
 let allAreas = [];
 
@@ -278,22 +383,73 @@ async function getArea() {
   }
 }
 
-getArea();
+if(location.pathname=="/area.html"){
+  getArea();
+}
+
 
 
 
 function displayArea(){
   let cartounaa='';
   for (let index = 0; index < allAreas.length; index++) {
-    cartounaa+=`<div class="col-md-3 d-flex flex-column">
+    cartounaa+=`<div class="col-md-3 d-flex flex-column areaCard">
                 <i class="fa-solid fa-house-laptop fa-4x"></i>
                 <h3>${allAreas[index].strArea}</h3>
             </div>`
     
   }
   if(document.getElementById('Area')) document.getElementById('Area').innerHTML=cartounaa;
+  let allAreaCard=document.querySelectorAll('.areaCard');
+
+  for (let i = 0; i < allAreaCard.length; i++) {
+    allAreaCard[i].addEventListener('click', function() {
+      let Text = allAreaCard[i].innerText;
+      localStorage.setItem('AreaMeal', Text);
+      location.href="./areaMeals.html"
+
+    
+    })
+  }
+
+}
+// display area meals
+let allAreaMeals=[];
+
+async function getAreaMeals(id) {
+  try {
+    let Data = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?a=${id}`);
+    let res = await Data.json();
+    allAreaMeals = res.meals;  // Store the array of categories
+    console.log(allAreaMeals); 
+    displayAreaMeals()
+  } catch (error) {
+    console.log(error + ' is error');
+  }
 }
 
+
+if(location.pathname=="/areaMeals.html"){
+  getAreaMeals(localStorage.getItem('AreaMeal'))
+}
+
+function displayAreaMeals(){
+let cartona='';
+for (let index = 0; index < allAreaMeals.length; index++) {
+  cartona+=`<div class="col-md-3  id="${allAreaMeals[index].idMeal}">
+            <div class="meal rounded mt-5 position-relative overflow-hidden">
+             <img src="${allAreaMeals[index].strMealThumb}" class="w-100 rounded" alt="">
+            <div class="cover d-flex flex-column">
+               <h3 class="caption">${allAreaMeals[index].strMeal}</h3>
+             
+           </div>
+            </div>     
+            </div>`
+ 
+  
+}
+if(document.getElementById('Areameals')) document.getElementById('Areameals').innerHTML=cartona;
+}
 
 // ingredient page
 
@@ -317,22 +473,80 @@ async function getIngredients() {
 function displayIngredients(){
   let cartounaa='';
   for (let index = 0; index < allIngredients.length; index++) {
-    cartounaa+=`  <div class="col-md-3 d-flex flex-column justify-content-center align-items-center">
+    cartounaa+=`  <div class="ingcard col-md-3 d-flex flex-column justify-content-center align-items-center" >
                 <i class="fa-solid fa-drumstick-bite fa-4x"></i>
             <h3>${allIngredients[index].strIngredient}</h3>
-            <p>${allIngredients[index].strDescription}</p>
+            <p>${allIngredients[index].strDescription.split(" ").slice(0,20).join(" ")}</p>
             </div>`
     
   }
   if(document.getElementById('ingredients')) document.getElementById('ingredients').innerHTML=cartounaa;
+let allIngCards=document.querySelectorAll('.ingcard');
+for (let index = 0; index < allIngCards.length; index++) {
+allIngCards[index].addEventListener('click',function(){
+  location.href="./ingredientMeal.html"
+  localStorage.setItem('ingId',allIngredients[index].strIngredient);
+})
+  
 }
 
-getIngredients();
+
+}
+
+if(location.pathname=="/ingredients.html"){
+  getIngredients();
+}
+
+// ingredients meals page
+
+
+
+let allIngMeals=[];
+
+async function getIngMeals(id) {
+  try {
+    let Data = await fetch(`https://www.themealdb.com/api/json/v1/1/filter.php?i=${id}`);
+    let res = await Data.json();
+    allIngMeals = res.meals;  // Store the array of categories
+    console.log(allIngMeals); 
+    displayIngMeals()
+  } catch (error) {
+    console.log(error + ' is error');
+  }
+}
+
+
+if(location.pathname=="/ingredientMeal.html"){
+  getIngMeals(localStorage.getItem('ingId'))
+}
+
+function displayIngMeals(){
+let cartona='';
+for (let index = 0; index < allIngMeals.length; index++) {
+  cartona+=`<div class="col-md-3  id="${allIngMeals[index].idMeal}">
+            <div class="meal rounded mt-5 position-relative overflow-hidden">
+             <img src="${allIngMeals[index].strMealThumb}" class="w-100 rounded" alt="">
+            <div class="cover d-flex flex-column">
+               <h3 class="caption">${allIngMeals[index].strMeal}</h3>
+             
+           </div>
+            </div>     
+            </div>`
+ 
+  
+}
+if(document.getElementById('IngredientsMeal')) document.getElementById('IngredientsMeal').innerHTML=cartona;
+}
+
+
+
+
+
 
 
 // contact us page
 function validateForm() {
-  // Get form elements and error spans
+  
   const name = document.getElementById('nameInput').value;
   const email = document.getElementById('emailInput').value;
   const phone = document.getElementById('phoneInput').value;
@@ -364,7 +578,7 @@ function validateForm() {
   passwordError.textContent = '';
   repasswordError.textContent = '';
 
-  // Validation checks and display errors
+  
   if (!nameRegex.test(name)) {
       nameError.textContent = "Please enter a valid name (minimum 3 letters).";
       valid = false;
@@ -396,17 +610,17 @@ function validateForm() {
      clearForm();
 
   }
-  function clearForm(){
-    name.value=null;
-    email.value=null;
-    phone.value=null;
-    age.value=null;
-    password.value=null;
-    repassword.value=null;
-  }
+
   
 }
-
+function clearForm() {
+  document.getElementById('nameInput').value = '';
+  document.getElementById('emailInput').value = '';
+  document.getElementById('phoneInput').value = '';
+  document.getElementById('ageInput').value = '';
+  document.getElementById('passwordInput').value = '';
+  document.getElementById('repasswordInput').value = '';
+}
 
 
 
